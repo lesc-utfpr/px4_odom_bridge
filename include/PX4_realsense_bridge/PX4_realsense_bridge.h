@@ -29,8 +29,10 @@ class PX4_Realsense_Bridge {
   ~PX4_Realsense_Bridge();
 
   void publishSystemStatus();
+  void publishOdometry();
 
   std::thread worker_;
+  std::thread odom_worker_;
 
 
  private:
@@ -45,13 +47,16 @@ class PX4_Realsense_Bridge {
   MAV_STATE system_status_{MAV_STATE::MAV_STATE_UNINIT};
   MAV_STATE last_system_status_{MAV_STATE::MAV_STATE_UNINIT};
 
+
   std::unique_ptr<std::mutex> status_mutex_;
+  std::unique_ptr<std::mutex> odom_mutex_;
 
   void odomCallback(const nav_msgs::Odometry& msg);
 
   bool flag_first_pose_received{false};
 
   ros::Time last_callback_time;
+  nav_msgs::Odometry current_odometry;
 
 };
 }

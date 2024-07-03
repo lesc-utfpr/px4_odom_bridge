@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
   ros::spin();
 
   Bridge.worker_.join();
+  Bridge.odom_worker_.join();
 
   return 0;
 }

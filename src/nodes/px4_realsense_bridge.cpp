@@ -23,7 +23,9 @@ PX4_Realsense_Bridge::PX4_Realsense_Bridge(const ros::NodeHandle& nh)
   last_callback_time = ros::Time::now();
 
   status_mutex_.reset(new std::mutex);
+  odom_mutex_.reset(new std::mutex);
   worker_ = std::thread(&PX4_Realsense_Bridge::publishSystemStatus, this);
+  odom_worker_ = std::thread(&PX4_Realsense_Bridge::publishOdometry, this);
 
 
 };
@@ -34,14 +36,16 @@ PX4_Realsense_Bridge::~PX4_Realsense_Bridge() { }
 void PX4_Realsense_Bridge::odomCallback(const nav_msgs::Odometry& msg) {
 
   // publish odometry msg
-  nav_msgs::Odometry output = msg;
-  output.header.frame_id = msg.header.frame_id;
-  output.child_frame_id = msg.child_frame_id;
-  mavros_odom_pub_.publish(output);
+  { // lock odometry mutex
+    std::lock_guard<std::mutex> odom_guard(*(odom_mutex_));
+    current_odometry = msg;
+    current_odometry.header.frame_id = msg.header.frame_id;
+    current_odometry.child_frame_id = msg.child_frame_id;
+  }
 
   flag_first_pose_received = true;
 
-  { // lock mutex
+  { // lock status mutex
     std::lock_guard<std::mutex> status_guard(*(status_mutex_));
 
     last_system_status_ = system_status_;
@@ -112,6 +116,30 @@ void PX4_Realsense_Bridge::publishSystemStatus(){
         mavros_system_status_pub_.publish(status_msg);
       }
     }
+  }
+
+}
+
+void PX4_Realsense_Bridge::publishOdometry(){
+  
+
+  while(ros::ok()){
+    
+    ros::Duration(0.05).sleep();
+
+
+
+    
+    { // lock odometry mutex
+      std::lock_guard<std::mutex> odom_guard(*(odom_mutex_));
+
+
+      nav_msgs::Odometry output = current_odometry;
+      output.header.frame_id = current_odometry.header.frame_id;
+      output.child_frame_id = current_odometry.child_frame_id;
+      mavros_odom_pub_.publish(output);
+    }
+    
   }
 
 }
