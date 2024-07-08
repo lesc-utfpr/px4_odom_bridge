@@ -6,9 +6,9 @@ This package is a bridge from PX4 to the Realsense T265 camera, which provides o
 ## Dependencies
 * librealsense: [https://github.com/IntelRealSense/librealsense](https://github.com/IntelRealSense/librealsense)
 
-   - For Jetson Nano [follow these instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation_jetson.md) and install librealsense2
+   - For Jetson Nano [follow these instructions](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation_jetson.md) and install librealsense2. *T265 no longer works on the newest librealsense version. Will have to look into how to download a previous version of it.
 
-* ROS Kinetic (Ubuntu 16.04) or ROS Melodic (Ubuntu 18.04): [http://wiki.ros.org/ROS/Installation](http://wiki.ros.org/ROS/Installation)
+* ROS Kinetic (Ubuntu 16.04) or ROS Melodic (Ubuntu 18.04): [http://wiki.ros.org/ROS/Installation](http://wiki.ros.org/ROS/Installation) (We used ROS Melodic for the tests)
 
 
 ## Installation
@@ -27,7 +27,7 @@ These steps contain the installation process, software dependencies and building
 
    ```bash
    cd ~/catkin_ws/src
-   git clone https://github.com/dbaldwin/VIO.git
+   git clone https://github.com/lesc-utfpr/px4_odom_bridge.git
    ```
 
 1. Install MAVROS (version 0.29.0 or above).
