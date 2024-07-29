@@ -133,11 +133,12 @@ void PX4_Realsense_Bridge::publishOdometry(){
     { // lock odometry mutex
       std::lock_guard<std::mutex> odom_guard(*(odom_mutex_));
 
-
-      nav_msgs::Odometry output = current_odometry;
-      output.header.frame_id = current_odometry.header.frame_id;
-      output.child_frame_id = current_odometry.child_frame_id;
-      mavros_odom_pub_.publish(output);
+      if(flag_first_pose_received == true) { 
+        nav_msgs::Odometry output = current_odometry;
+        output.header.frame_id = current_odometry.header.frame_id;
+        output.child_frame_id = current_odometry.child_frame_id;
+        mavros_odom_pub_.publish(output);
+      }
     }
     
   }
