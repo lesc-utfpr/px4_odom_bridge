@@ -70,6 +70,7 @@ These steps contain the installation process, software dependencies and building
    cd ~/catkin_ws
    catkin build px4_realsense_bridge
    ```
+   >**Note** In case cmake doesn't find the pcl config files, one solution is to add the line set(PCL_ROOT "/usr") to the PCLConfig.cmake file. (probably in the directory /usr/lib/x86_64-linux-gnu/cmake/pcl)
 
 1. Run the ROS node:
 
